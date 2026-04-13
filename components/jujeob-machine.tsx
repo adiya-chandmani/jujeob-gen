@@ -284,7 +284,7 @@ export function JujeobMachine() {
 
       <div className="relative z-10 mx-auto flex w-full max-w-xl flex-col items-center text-center sm:max-w-3xl">
         <h1 className="text-[2.5rem] font-extrabold tracking-[-0.04em] text-white drop-shadow-[0_8px_28px_rgba(0,0,0,0.55)] sm:text-6xl">
-          주접 생성기
+          주접자판기
         </h1>
         <p className="mt-3 text-xl font-semibold tracking-[-0.03em] text-white/92 sm:mt-4 sm:text-3xl">
           {subtitleText}
