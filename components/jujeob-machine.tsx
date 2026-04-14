@@ -8,12 +8,19 @@ import { jujeobChatDB } from "@/lib/jujeob-chat-data";
 import { normalizeName, renderChatItem, validateName } from "@/lib/jujeob-engine";
 import type { JujeobChatItem } from "@/lib/types";
 
+type PreviewMode = "kakao" | "instagram";
+type RenderedChat = ReturnType<typeof renderChatItem>;
+
 const DEFAULT_NAME = "민지";
 const MAC_WINDOW_CONTROLS = [
   { id: "close", color: "bg-[#ff5f57]" },
   { id: "minimize", color: "bg-[#febc2e]" },
   { id: "maximize", color: "bg-[#28c840]" },
 ] as const;
+const PREVIEW_MODE_OPTIONS = [
+  { id: "kakao", label: "카카오톡" },
+  { id: "instagram", label: "인스타 DM" },
+] as const satisfies ReadonlyArray<{ id: PreviewMode; label: string }>;
 
 const BACKGROUND_NAMES = ["민주", "민지", "해린", "서연", "지민", "준혁", "유진", "하린"];
 const ROTATIONS = [-3, 2, -2, 4, -4, 3, -1, 1];
@@ -229,11 +236,87 @@ function MenuIcon() {
   );
 }
 
-function KakaoProfileAvatar() {
+function ChevronLeftIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" aria-hidden="true">
+      <path d="M15 5L8 12L15 19" stroke="currentColor" strokeLinecap="round" strokeWidth="2" />
+    </svg>
+  );
+}
+
+function InfoCircleIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="2" />
+      <path d="M12 10V16" stroke="currentColor" strokeLinecap="round" strokeWidth="2" />
+      <circle cx="12" cy="7.2" r="1" fill="currentColor" />
+    </svg>
+  );
+}
+
+function CameraIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" aria-hidden="true">
+      <path
+        d="M8.5 7.5L10 5.5H14L15.5 7.5H18C19.1 7.5 20 8.4 20 9.5V16.5C20 17.6 19.1 18.5 18 18.5H6C4.9 18.5 4 17.6 4 16.5V9.5C4 8.4 4.9 7.5 6 7.5H8.5Z"
+        stroke="currentColor"
+        strokeLinejoin="round"
+        strokeWidth="2"
+      />
+      <circle cx="12" cy="13" r="3.5" stroke="currentColor" strokeWidth="2" />
+    </svg>
+  );
+}
+
+function MicrophoneIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" aria-hidden="true">
+      <rect x="9" y="4" width="6" height="10" rx="3" stroke="currentColor" strokeWidth="2" />
+      <path d="M6.5 11.5C6.5 14.5 8.8 16.5 12 16.5C15.2 16.5 17.5 14.5 17.5 11.5" stroke="currentColor" strokeLinecap="round" strokeWidth="2" />
+      <path d="M12 16.5V20" stroke="currentColor" strokeLinecap="round" strokeWidth="2" />
+    </svg>
+  );
+}
+
+function GalleryIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" aria-hidden="true">
+      <rect x="4" y="5" width="16" height="14" rx="3" stroke="currentColor" strokeWidth="2" />
+      <circle cx="9" cy="10" r="1.6" fill="currentColor" />
+      <path d="M7 17L11 13L13.5 15.5L17 12L20 15" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
+    </svg>
+  );
+}
+
+function StickerIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" aria-hidden="true">
+      <rect x="5" y="5" width="14" height="14" rx="4" stroke="currentColor" strokeWidth="2" />
+      <path d="M10 11H10.01" stroke="currentColor" strokeLinecap="round" strokeWidth="2.4" />
+      <path d="M14 11H14.01" stroke="currentColor" strokeLinecap="round" strokeWidth="2.4" />
+      <path d="M9 14C9.8 15.2 10.8 15.8 12 15.8C13.2 15.8 14.2 15.2 15 14" stroke="currentColor" strokeLinecap="round" strokeWidth="2" />
+    </svg>
+  );
+}
+
+function HeartIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" aria-hidden="true">
+      <path
+        d="M12 19.2L5.8 13.3C4.1 11.7 4.1 9 5.8 7.4C7.4 5.9 10.1 5.9 11.7 7.4L12 7.8L12.3 7.4C13.9 5.9 16.6 5.9 18.2 7.4C19.9 9 19.9 11.7 18.2 13.3L12 19.2Z"
+        stroke="currentColor"
+        strokeLinejoin="round"
+        strokeWidth="2"
+      />
+    </svg>
+  );
+}
+
+function ProfilePhoto({ className }: { className: string }) {
   return (
     <div
       aria-hidden="true"
-      className="relative h-11 w-11 shrink-0 overflow-hidden rounded-full bg-[#f5d64f] shadow-[inset_0_1px_0_rgba(255,255,255,0.5),0_3px_8px_rgba(0,0,0,0.08)]"
+      className={`relative shrink-0 overflow-hidden rounded-full bg-[#f5d64f] shadow-[inset_0_1px_0_rgba(255,255,255,0.5),0_3px_8px_rgba(0,0,0,0.08)] ${className}`}
     >
       <img
         src="/background-collage/0.jpg"
@@ -241,6 +324,234 @@ function KakaoProfileAvatar() {
         className="h-full w-full object-cover"
         draggable={false}
       />
+    </div>
+  );
+}
+
+function KakaoProfileAvatar() {
+  return <ProfilePhoto className="h-11 w-11" />;
+}
+
+function PreviewModeToggle({
+  previewMode,
+  onChange,
+}: {
+  previewMode: PreviewMode;
+  onChange: (mode: PreviewMode) => void;
+}) {
+  return (
+    <div className="flex flex-wrap gap-2">
+      {PREVIEW_MODE_OPTIONS.map((option) => (
+        <button
+          key={option.id}
+          type="button"
+          className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
+            previewMode === option.id
+              ? "bg-white text-slate-900 shadow-[0_10px_30px_rgba(0,0,0,0.2)]"
+              : "bg-white/10 text-white/78 hover:bg-white/16"
+          }`}
+          onClick={() => onChange(option.id)}
+        >
+          {option.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function KakaoPreview({
+  effectiveName,
+  chat,
+  onCopyBubble,
+}: {
+  effectiveName: string;
+  chat: RenderedChat;
+  onCopyBubble: (text: string) => void;
+}) {
+  return (
+    <div className="rounded-[22px] border border-white/25 bg-[#abc1d1] px-2.5 pb-2.5 pt-2 text-left text-slate-900 shadow-[0_20px_60px_rgba(0,0,0,0.35)] sm:rounded-[26px] sm:px-4 sm:pb-4 sm:pt-3">
+      <div className="overflow-hidden rounded-[18px] bg-[#b9cfdd] sm:rounded-[22px]">
+        <div className="border-b border-black/5 bg-[#a7bece] px-4 pb-2.5 pt-0.5 sm:px-5 sm:pb-3 sm:pt-1">
+          <div className="flex items-start justify-between">
+            <div className="flex items-center gap-2">
+              {MAC_WINDOW_CONTROLS.map((control) => (
+                <span
+                  key={control.id}
+                  aria-hidden="true"
+                  className={`h-3 w-3 rounded-full border border-black/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] ${control.color}`}
+                />
+              ))}
+            </div>
+
+            <div className="flex items-center gap-1.5 pt-0.5" aria-hidden="true">
+              <span className="h-1.5 w-10 rounded-full bg-black/8" />
+              <span className="h-3 w-3 rounded-full border border-white/60 bg-white/45" />
+            </div>
+          </div>
+
+          <div className="mt-1.5 flex items-center justify-between gap-3">
+            <div className="flex min-w-0 items-center gap-3">
+              <KakaoProfileAvatar />
+
+              <div className="min-w-0">
+                <p className="truncate text-[15px] font-semibold tracking-[-0.02em] text-slate-800">
+                  {effectiveName}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex shrink-0 items-center gap-0.5 text-slate-800 sm:gap-1">
+              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full">
+                <SearchIcon />
+              </span>
+              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full">
+                <PhoneIcon />
+              </span>
+              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full">
+                <VideoIcon />
+              </span>
+              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full">
+                <MenuIcon />
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-2.5 bg-[#b9cfdd] px-3 py-3 sm:space-y-3 sm:px-5 sm:py-4">
+          <div className="flex justify-end">
+            <button
+              type="button"
+              className="max-w-[88%] rounded-[16px] rounded-br-md bg-[#ffe45c] px-3.5 py-2.5 text-left text-sm leading-6 text-slate-900 shadow-sm transition hover:brightness-[0.98] sm:max-w-[84%] sm:rounded-[18px] sm:px-4 sm:py-3 sm:text-[15px] sm:leading-7"
+              onClick={() => onCopyBubble(chat.renderedOpener)}
+            >
+              {chat.renderedOpener}
+            </button>
+          </div>
+
+          <div className="flex justify-start">
+            <button
+              type="button"
+              className="max-w-[82%] rounded-[16px] rounded-bl-md bg-white px-3.5 py-2.5 text-left text-sm leading-6 text-slate-900 shadow-sm transition hover:bg-slate-50 sm:max-w-[78%] sm:rounded-[18px] sm:px-4 sm:py-3 sm:text-[15px] sm:leading-7"
+              onClick={() => onCopyBubble(chat.renderedReply)}
+            >
+              {chat.renderedReply}
+            </button>
+          </div>
+
+          <div className="flex justify-end">
+            <button
+              type="button"
+              className="max-w-[88%] rounded-[16px] rounded-br-md bg-[#ffe45c] px-3.5 py-2.5 text-left text-sm font-semibold leading-6 text-slate-900 shadow-sm transition hover:brightness-[0.98] sm:max-w-[84%] sm:rounded-[18px] sm:px-4 sm:py-3 sm:text-[15px] sm:leading-7"
+              onClick={() => onCopyBubble(chat.renderedPunchline)}
+            >
+              {chat.renderedPunchline}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function InstagramPreview({
+  effectiveName,
+  chat,
+  onCopyBubble,
+}: {
+  effectiveName: string;
+  chat: RenderedChat;
+  onCopyBubble: (text: string) => void;
+}) {
+  return (
+    <div className="rounded-[22px] bg-[linear-gradient(145deg,#ff4fd8_0%,#f42493_32%,#ff5c39_74%,#ffca2d_100%)] p-3 shadow-[0_20px_60px_rgba(0,0,0,0.35)] sm:rounded-[26px] sm:p-5">
+      <div className="mx-auto w-full max-w-[320px] rounded-[34px] border border-black/10 bg-white px-3 pb-3 pt-3 text-slate-900 shadow-[0_22px_45px_rgba(0,0,0,0.22)]">
+        <div className="flex items-center justify-between px-2 text-[11px] font-semibold tracking-[0.02em] text-slate-500">
+          <span>9:41</span>
+          <div className="flex items-center gap-1.5" aria-hidden="true">
+            <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
+            <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
+            <span className="h-1.5 w-4 rounded-full bg-slate-400" />
+          </div>
+        </div>
+
+        <div className="mt-2 flex items-center justify-between gap-3 border-b border-slate-100 px-1 pb-3">
+          <div className="flex min-w-0 items-center gap-2.5">
+            <span className="inline-flex h-8 w-8 items-center justify-center text-slate-800">
+              <ChevronLeftIcon />
+            </span>
+            <ProfilePhoto className="h-8 w-8 border border-black/10" />
+            <div className="min-w-0">
+              <p className="truncate text-[14px] font-semibold text-slate-900">{effectiveName}</p>
+              <p className="truncate text-[11px] font-medium text-slate-400">활동 중</p>
+            </div>
+          </div>
+
+          <div className="flex shrink-0 items-center gap-1 text-slate-900">
+            <span className="inline-flex h-8 w-8 items-center justify-center">
+              <PhoneIcon />
+            </span>
+            <span className="inline-flex h-8 w-8 items-center justify-center">
+              <InfoCircleIcon />
+            </span>
+          </div>
+        </div>
+
+        <div className="space-y-3 px-1 py-4">
+          <div className="text-center text-[11px] font-medium text-slate-400">오늘</div>
+
+          <div className="flex justify-end">
+            <button
+              type="button"
+              className="max-w-[84%] rounded-[20px] rounded-br-md bg-[linear-gradient(135deg,#d946ef_0%,#7c3aed_100%)] px-3.5 py-2.5 text-left text-[13px] font-medium leading-5 text-white shadow-[0_10px_24px_rgba(124,58,237,0.25)] transition hover:brightness-[1.03]"
+              onClick={() => onCopyBubble(chat.renderedOpener)}
+            >
+              {chat.renderedOpener}
+            </button>
+          </div>
+
+          <div className="flex items-end gap-2">
+            <ProfilePhoto className="h-6 w-6 border border-black/10" />
+            <button
+              type="button"
+              className="max-w-[78%] rounded-[18px] rounded-bl-md bg-[#f2f2f5] px-3.5 py-2.5 text-left text-[13px] font-medium leading-5 text-slate-900 transition hover:bg-slate-200"
+              onClick={() => onCopyBubble(chat.renderedReply)}
+            >
+              {chat.renderedReply}
+            </button>
+          </div>
+
+          <div className="flex justify-end">
+            <button
+              type="button"
+              className="max-w-[84%] rounded-[20px] rounded-br-md bg-[linear-gradient(135deg,#d946ef_0%,#7c3aed_100%)] px-3.5 py-2.5 text-left text-[13px] font-semibold leading-5 text-white shadow-[0_10px_24px_rgba(124,58,237,0.25)] transition hover:brightness-[1.03]"
+              onClick={() => onCopyBubble(chat.renderedPunchline)}
+            >
+              {chat.renderedPunchline}
+            </button>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 border-t border-slate-100 px-1 pt-3">
+          <span className="inline-flex h-8 w-8 items-center justify-center rounded-full text-[#7c3aed]">
+            <CameraIcon />
+          </span>
+          <div className="flex h-10 min-w-0 flex-1 items-center rounded-full border border-slate-200 px-4 text-[13px] font-medium text-slate-400">
+            Message...
+          </div>
+          <span className="inline-flex h-8 w-8 items-center justify-center text-slate-500">
+            <MicrophoneIcon />
+          </span>
+          <span className="inline-flex h-8 w-8 items-center justify-center text-slate-500">
+            <GalleryIcon />
+          </span>
+          <span className="inline-flex h-8 w-8 items-center justify-center text-slate-500">
+            <StickerIcon />
+          </span>
+          <span className="inline-flex h-8 w-8 items-center justify-center text-slate-500">
+            <HeartIcon />
+          </span>
+        </div>
+      </div>
     </div>
   );
 }
@@ -283,6 +594,7 @@ function BackgroundWall() {
 
 export function JujeobMachine() {
   const [name, setName] = useState("");
+  const [previewMode, setPreviewMode] = useState<PreviewMode>("kakao");
   const [selectedItem, setSelectedItem] = useState<JujeobChatItem>(jujeobChatDB[0]);
   const [seenIds, setSeenIds] = useState<string[]>([jujeobChatDB[0].id]);
   const [error, setError] = useState("");
@@ -386,85 +698,34 @@ export function JujeobMachine() {
           {error ? <p className="text-sm text-rose-300">{error}</p> : null}
         </form>
 
-        <div className="mt-6 block w-full max-w-[720px] rounded-[22px] border border-white/25 bg-[#abc1d1] px-2.5 pb-2.5 pt-2 text-left text-slate-900 shadow-[0_20px_60px_rgba(0,0,0,0.35)] sm:mt-8 sm:rounded-[26px] sm:px-4 sm:pb-4 sm:pt-3">
-          <div className="overflow-hidden rounded-[18px] bg-[#b9cfdd] sm:rounded-[22px]">
-            <div className="border-b border-black/5 bg-[#a7bece] px-4 pb-2.5 pt-0.5 sm:px-5 sm:pb-3 sm:pt-1">
-              <div className="flex items-start justify-between">
-                <div className="flex items-center gap-2">
-                  {MAC_WINDOW_CONTROLS.map((control) => (
-                    <span
-                      key={control.id}
-                      aria-hidden="true"
-                      className={`h-3 w-3 rounded-full border border-black/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] ${control.color}`}
-                    />
-                  ))}
-                </div>
-
-                <div className="flex items-center gap-1.5 pt-0.5" aria-hidden="true">
-                  <span className="h-1.5 w-10 rounded-full bg-black/8" />
-                  <span className="h-3 w-3 rounded-full border border-white/60 bg-white/45" />
-                </div>
-              </div>
-
-              <div className="mt-1.5 flex items-center justify-between gap-3">
-                <div className="flex min-w-0 items-center gap-3">
-                  <KakaoProfileAvatar />
-
-                  <div className="min-w-0">
-                    <p className="truncate text-[15px] font-semibold tracking-[-0.02em] text-slate-800">
-                      {effectiveName}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex shrink-0 items-center gap-0.5 text-slate-800 sm:gap-1">
-                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-full">
-                    <SearchIcon />
-                  </span>
-                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-full">
-                    <PhoneIcon />
-                  </span>
-                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-full">
-                    <VideoIcon />
-                  </span>
-                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-full">
-                    <MenuIcon />
-                  </span>
-                </div>
-              </div>
+        <div className="mt-6 w-full max-w-[760px] rounded-[22px] border border-white/15 bg-[rgba(10,11,15,0.5)] p-3 text-left shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur-sm sm:mt-8 sm:rounded-[26px] sm:p-4">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/45">
+                Preview Mode
+              </p>
+              <p className="mt-1 text-sm font-semibold text-white/88">
+                원하는 메신저 스타일로 미리보기
+              </p>
             </div>
 
-            <div className="space-y-2.5 bg-[#b9cfdd] px-3 py-3 sm:space-y-3 sm:px-5 sm:py-4">
-              <div className="flex justify-end">
-                <button
-                  type="button"
-                  className="max-w-[88%] rounded-[16px] rounded-br-md bg-[#ffe45c] px-3.5 py-2.5 text-left text-sm leading-6 text-slate-900 shadow-sm transition hover:brightness-[0.98] sm:max-w-[84%] sm:rounded-[18px] sm:px-4 sm:py-3 sm:text-[15px] sm:leading-7"
-                  onClick={() => handleCopyBubble(chat.renderedOpener)}
-                >
-                  {chat.renderedOpener}
-                </button>
-              </div>
+            <PreviewModeToggle previewMode={previewMode} onChange={setPreviewMode} />
+          </div>
 
-              <div className="flex justify-start">
-                <button
-                  type="button"
-                  className="max-w-[82%] rounded-[16px] rounded-bl-md bg-white px-3.5 py-2.5 text-left text-sm leading-6 text-slate-900 shadow-sm transition hover:bg-slate-50 sm:max-w-[78%] sm:rounded-[18px] sm:px-4 sm:py-3 sm:text-[15px] sm:leading-7"
-                  onClick={() => handleCopyBubble(chat.renderedReply)}
-                >
-                  {chat.renderedReply}
-                </button>
-              </div>
-
-              <div className="flex justify-end">
-                <button
-                  type="button"
-                  className="max-w-[88%] rounded-[16px] rounded-br-md bg-[#ffe45c] px-3.5 py-2.5 text-left text-sm font-semibold leading-6 text-slate-900 shadow-sm transition hover:brightness-[0.98] sm:max-w-[84%] sm:rounded-[18px] sm:px-4 sm:py-3 sm:text-[15px] sm:leading-7"
-                  onClick={() => handleCopyBubble(chat.renderedPunchline)}
-                >
-                  {chat.renderedPunchline}
-                </button>
-              </div>
-            </div>
+          <div className="mt-4">
+            {previewMode === "kakao" ? (
+              <KakaoPreview
+                effectiveName={effectiveName}
+                chat={chat}
+                onCopyBubble={handleCopyBubble}
+              />
+            ) : (
+              <InstagramPreview
+                effectiveName={effectiveName}
+                chat={chat}
+                onCopyBubble={handleCopyBubble}
+              />
+            )}
           </div>
         </div>
 
