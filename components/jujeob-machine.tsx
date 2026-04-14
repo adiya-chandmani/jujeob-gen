@@ -233,10 +233,14 @@ function KakaoProfileAvatar() {
   return (
     <div
       aria-hidden="true"
-      className="relative h-11 w-11 shrink-0 overflow-hidden rounded-full bg-[linear-gradient(180deg,#fff3a1_0%,#ffd340_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.5),0_3px_8px_rgba(0,0,0,0.08)]"
+      className="relative h-11 w-11 shrink-0 overflow-hidden rounded-full bg-[#f5d64f] shadow-[inset_0_1px_0_rgba(255,255,255,0.5),0_3px_8px_rgba(0,0,0,0.08)]"
     >
-      <span className="absolute left-1/2 top-[9px] h-3.5 w-3.5 -translate-x-1/2 rounded-full bg-[#6b4b00]/80" />
-      <span className="absolute bottom-[7px] left-1/2 h-5 w-7 -translate-x-1/2 rounded-t-[999px] bg-[#6b4b00]/80" />
+      <img
+        src="/background-collage/0.jpg"
+        alt=""
+        className="h-full w-full object-cover"
+        draggable={false}
+      />
     </div>
   );
 }
@@ -278,7 +282,7 @@ function BackgroundWall() {
 }
 
 export function JujeobMachine() {
-  const [name, setName] = useState(DEFAULT_NAME);
+  const [name, setName] = useState("");
   const [selectedItem, setSelectedItem] = useState<JujeobChatItem>(jujeobChatDB[0]);
   const [seenIds, setSeenIds] = useState<string[]>([jujeobChatDB[0].id]);
   const [error, setError] = useState("");
