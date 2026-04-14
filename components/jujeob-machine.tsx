@@ -463,62 +463,57 @@ function InstagramPreview({
   onCopyBubble: (text: string) => void;
 }) {
   return (
-    <div className="rounded-[22px] bg-[linear-gradient(135deg,#ffb84d_0%,#ff5d8f_38%,#d946ef_72%,#7c3aed_100%)] p-[1.5px] shadow-[0_20px_60px_rgba(0,0,0,0.35)] sm:rounded-[26px]">
-      <div className="overflow-hidden rounded-[21px] bg-[#fff8fc] sm:rounded-[25px]">
-        <div className="border-b border-[#f1d7e8] bg-[linear-gradient(135deg,#fff5cf_0%,#fff7fb_30%,#f7ecff_100%)] px-4 pb-2.5 pt-1.5 sm:px-5 sm:pb-3 sm:pt-2">
-          <div className="flex items-start justify-between">
-            <div className="flex items-center gap-2" aria-hidden="true">
-              <span className="h-2.5 w-8 rounded-full bg-[linear-gradient(90deg,#ff9f31_0%,#ff4d7f_100%)] opacity-85" />
-              <span className="h-2.5 w-2.5 rounded-full bg-[#c084fc]" />
-            </div>
-
-            <div className="flex items-center gap-1.5 pt-0.5" aria-hidden="true">
-              <span className="h-1.5 w-10 rounded-full bg-[#a855f7]/12" />
-              <span className="h-3 w-3 rounded-full border border-[#ffffff] bg-white/70" />
-            </div>
-          </div>
-
-          <div className="mt-1.5 flex items-center justify-between gap-3">
-            <div className="flex min-w-0 items-center gap-3">
-              <ProfilePhoto className="h-11 w-11 border border-white/80 ring-2 ring-[#f2d6ff]" />
-
-              <div className="min-w-0">
-                <p className="truncate text-[15px] font-semibold tracking-[-0.02em] text-slate-900">
-                  {effectiveName}
-                </p>
-                <p className="truncate text-[11px] font-medium text-[#a855f7]">Instagram DM</p>
-              </div>
-            </div>
-
-            <div className="flex shrink-0 items-center gap-0.5 text-slate-800 sm:gap-1">
-              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full">
-                <PhoneIcon />
-              </span>
-              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full">
-                <CameraIcon />
-              </span>
-              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full">
-                <InfoCircleIcon />
-              </span>
-            </div>
+    <div className="rounded-[22px] bg-[linear-gradient(145deg,#ff4fd8_0%,#f42493_32%,#ff5c39_74%,#ffca2d_100%)] p-3 shadow-[0_20px_60px_rgba(0,0,0,0.35)] sm:rounded-[26px] sm:p-5">
+      <div className="mx-auto w-full max-w-[320px] rounded-[34px] border border-black/10 bg-white px-3 pb-3 pt-3 text-slate-900 shadow-[0_22px_45px_rgba(0,0,0,0.22)]">
+        <div className="flex items-center justify-between px-2 text-[11px] font-semibold tracking-[0.02em] text-slate-500">
+          <span>9:41</span>
+          <div className="flex items-center gap-1.5" aria-hidden="true">
+            <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
+            <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
+            <span className="h-1.5 w-4 rounded-full bg-slate-400" />
           </div>
         </div>
 
-        <div className="space-y-2.5 bg-[linear-gradient(180deg,#fff9fc_0%,#fff3f9_45%,#f9f1ff_100%)] px-3 py-3 sm:space-y-3 sm:px-5 sm:py-4">
+        <div className="mt-2 flex items-center justify-between gap-3 border-b border-slate-100 px-1 pb-3">
+          <div className="flex min-w-0 items-center gap-2.5">
+            <span className="inline-flex h-8 w-8 items-center justify-center text-slate-800">
+              <ChevronLeftIcon />
+            </span>
+            <ProfilePhoto className="h-8 w-8 border border-black/10" />
+            <div className="min-w-0">
+              <p className="truncate text-[14px] font-semibold text-slate-900">{effectiveName}</p>
+              <p className="truncate text-[11px] font-medium text-slate-400">활동 중</p>
+            </div>
+          </div>
+
+          <div className="flex shrink-0 items-center gap-1 text-slate-900">
+            <span className="inline-flex h-8 w-8 items-center justify-center">
+              <PhoneIcon />
+            </span>
+            <span className="inline-flex h-8 w-8 items-center justify-center">
+              <InfoCircleIcon />
+            </span>
+          </div>
+        </div>
+
+        <div className="space-y-3 px-1 py-4">
+          <div className="text-center text-[11px] font-medium text-slate-400">오늘</div>
+
           <div className="flex justify-end">
             <button
               type="button"
-              className="max-w-[88%] rounded-[16px] rounded-br-md bg-[linear-gradient(135deg,#ff5d8f_0%,#d946ef_55%,#7c3aed_100%)] px-3.5 py-2.5 text-left text-sm leading-6 text-white shadow-[0_10px_24px_rgba(168,85,247,0.24)] transition hover:brightness-[1.02] sm:max-w-[84%] sm:rounded-[18px] sm:px-4 sm:py-3 sm:text-[15px] sm:leading-7"
+              className="max-w-[84%] rounded-[20px] rounded-br-md bg-[linear-gradient(135deg,#d946ef_0%,#7c3aed_100%)] px-3.5 py-2.5 text-left text-[13px] font-medium leading-5 text-white shadow-[0_10px_24px_rgba(124,58,237,0.25)] transition hover:brightness-[1.03]"
               onClick={() => onCopyBubble(chat.renderedOpener)}
             >
               {chat.renderedOpener}
             </button>
           </div>
 
-          <div className="flex justify-start">
+          <div className="flex items-end gap-2">
+            <ProfilePhoto className="h-6 w-6 border border-black/10" />
             <button
               type="button"
-              className="max-w-[82%] rounded-[16px] rounded-bl-md border border-[#f1ddea] bg-white px-3.5 py-2.5 text-left text-sm leading-6 text-slate-900 shadow-[0_6px_16px_rgba(0,0,0,0.05)] transition hover:bg-[#fff8fd] sm:max-w-[78%] sm:rounded-[18px] sm:px-4 sm:py-3 sm:text-[15px] sm:leading-7"
+              className="max-w-[78%] rounded-[18px] rounded-bl-md bg-[#f2f2f5] px-3.5 py-2.5 text-left text-[13px] font-medium leading-5 text-slate-900 transition hover:bg-slate-200"
               onClick={() => onCopyBubble(chat.renderedReply)}
             >
               {chat.renderedReply}
@@ -528,12 +523,33 @@ function InstagramPreview({
           <div className="flex justify-end">
             <button
               type="button"
-              className="max-w-[88%] rounded-[16px] rounded-br-md bg-[linear-gradient(135deg,#ff5d8f_0%,#d946ef_55%,#7c3aed_100%)] px-3.5 py-2.5 text-left text-sm font-semibold leading-6 text-white shadow-[0_10px_24px_rgba(168,85,247,0.24)] transition hover:brightness-[1.02] sm:max-w-[84%] sm:rounded-[18px] sm:px-4 sm:py-3 sm:text-[15px] sm:leading-7"
+              className="max-w-[84%] rounded-[20px] rounded-br-md bg-[linear-gradient(135deg,#d946ef_0%,#7c3aed_100%)] px-3.5 py-2.5 text-left text-[13px] font-semibold leading-5 text-white shadow-[0_10px_24px_rgba(124,58,237,0.25)] transition hover:brightness-[1.03]"
               onClick={() => onCopyBubble(chat.renderedPunchline)}
             >
               {chat.renderedPunchline}
             </button>
           </div>
+        </div>
+
+        <div className="flex items-center gap-2 border-t border-slate-100 px-1 pt-3">
+          <span className="inline-flex h-8 w-8 items-center justify-center rounded-full text-[#7c3aed]">
+            <CameraIcon />
+          </span>
+          <div className="flex h-10 min-w-0 flex-1 items-center rounded-full border border-slate-200 px-4 text-[13px] font-medium text-slate-400">
+            Message...
+          </div>
+          <span className="inline-flex h-8 w-8 items-center justify-center text-slate-500">
+            <MicrophoneIcon />
+          </span>
+          <span className="inline-flex h-8 w-8 items-center justify-center text-slate-500">
+            <GalleryIcon />
+          </span>
+          <span className="inline-flex h-8 w-8 items-center justify-center text-slate-500">
+            <StickerIcon />
+          </span>
+          <span className="inline-flex h-8 w-8 items-center justify-center text-slate-500">
+            <HeartIcon />
+          </span>
         </div>
       </div>
     </div>
