@@ -331,7 +331,7 @@ export function JujeobMachine() {
 
         <div className="mt-6 block w-full max-w-[720px] rounded-[22px] border border-white/25 bg-[#abc1d1] px-3 py-3 text-left text-slate-900 shadow-[0_20px_60px_rgba(0,0,0,0.35)] sm:mt-8 sm:rounded-[26px] sm:px-5 sm:py-5">
           <div className="overflow-hidden rounded-[18px] bg-[#b9cfdd] sm:rounded-[22px]">
-            <div className="border-b border-black/5 bg-[#a7bece] px-4 py-3 sm:px-5">
+            <div className="border-b border-black/5 bg-[#a7bece] px-4 pb-3.5 pt-2.5 sm:px-5">
               <div className="flex items-center gap-2">
                 {MAC_WINDOW_CONTROLS.map((control) => (
                   <span
