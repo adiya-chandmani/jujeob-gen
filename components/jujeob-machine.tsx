@@ -9,6 +9,11 @@ import { normalizeName, renderChatItem, validateName } from "@/lib/jujeob-engine
 import type { JujeobChatItem } from "@/lib/types";
 
 const DEFAULT_NAME = "민지";
+const MAC_WINDOW_CONTROLS = [
+  { id: "close", color: "bg-[#ff5f57]" },
+  { id: "minimize", color: "bg-[#febc2e]" },
+  { id: "maximize", color: "bg-[#28c840]" },
+] as const;
 
 const BACKGROUND_NAMES = ["민주", "민지", "해린", "서연", "지민", "준혁", "유진", "하린"];
 const ROTATIONS = [-3, 2, -2, 4, -4, 3, -1, 1];
@@ -327,7 +332,15 @@ export function JujeobMachine() {
         <div className="mt-6 block w-full max-w-[720px] rounded-[22px] border border-white/25 bg-[#abc1d1] px-3 py-3 text-left text-slate-900 shadow-[0_20px_60px_rgba(0,0,0,0.35)] sm:mt-8 sm:rounded-[26px] sm:px-5 sm:py-5">
           <div className="overflow-hidden rounded-[18px] bg-[#b9cfdd] sm:rounded-[22px]">
             <div className="border-b border-black/5 bg-[#a7bece] px-4 py-3 sm:px-5">
-              <p className="text-sm font-semibold text-slate-700">카톡 미리보기</p>
+              <div className="flex items-center gap-2">
+                {MAC_WINDOW_CONTROLS.map((control) => (
+                  <span
+                    key={control.id}
+                    aria-hidden="true"
+                    className={`h-3 w-3 rounded-full border border-black/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] ${control.color}`}
+                  />
+                ))}
+              </div>
             </div>
 
             <div className="space-y-2.5 bg-[#b9cfdd] px-3 py-3 sm:space-y-3 sm:px-5 sm:py-4">
