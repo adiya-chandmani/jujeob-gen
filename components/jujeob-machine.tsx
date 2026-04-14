@@ -2,6 +2,7 @@
 
 import type { CSSProperties } from "react";
 import { useEffect, useRef, useState } from "react";
+import { toPng } from "html-to-image";
 import { renderTemplate } from "@/lib/josa";
 import { jujeobItems } from "@/lib/jujeob-data";
 import { jujeobChatDB } from "@/lib/jujeob-chat-data";
@@ -286,8 +287,10 @@ export function JujeobMachine() {
   const [selectedItem, setSelectedItem] = useState<JujeobChatItem>(jujeobChatDB[0]);
   const [seenIds, setSeenIds] = useState<string[]>([jujeobChatDB[0].id]);
   const [error, setError] = useState("");
+  const [isSavingImage, setIsSavingImage] = useState(false);
   const [toast, setToast] = useState("");
 
+  const previewRef = useRef<HTMLDivElement | null>(null);
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const effectiveName = normalizeName(name) || DEFAULT_NAME;
@@ -340,6 +343,34 @@ export function JujeobMachine() {
     showToast(copied ? "복사됨" : "복사 실패");
   }
 
+  async function handleSavePreviewImage() {
+    const previewNode = previewRef.current;
+
+    if (!previewNode || isSavingImage) {
+      return;
+    }
+
+    setIsSavingImage(true);
+
+    try {
+      const dataUrl = await toPng(previewNode, {
+        cacheBust: true,
+        pixelRatio: Math.max(2, window.devicePixelRatio || 1),
+      });
+      const downloadLink = document.createElement("a");
+      const fileName = `jujeob-${effectiveName}.png`;
+
+      downloadLink.href = dataUrl;
+      downloadLink.download = fileName;
+      downloadLink.click();
+      showToast("이미지 저장됨");
+    } catch {
+      showToast("이미지 저장 실패");
+    } finally {
+      setIsSavingImage(false);
+    }
+  }
+
   return (
     <section className="relative isolate flex min-h-[100svh] items-center justify-center overflow-hidden bg-[#111214] px-3 py-5 text-white sm:min-h-screen sm:px-4 sm:py-8">
       <BackgroundWall />
@@ -386,7 +417,22 @@ export function JujeobMachine() {
           {error ? <p className="text-sm text-rose-300">{error}</p> : null}
         </form>
 
-        <div className="mt-6 block w-full max-w-[720px] rounded-[22px] border border-white/25 bg-[#abc1d1] px-2.5 pb-2.5 pt-2 text-left text-slate-900 shadow-[0_20px_60px_rgba(0,0,0,0.35)] sm:mt-8 sm:rounded-[26px] sm:px-4 sm:pb-4 sm:pt-3">
+        <div className="mt-6 flex w-full max-w-[720px] flex-col gap-3 sm:mt-8">
+          <div className="flex justify-end">
+            <button
+              type="button"
+              className="rounded-full border border-white/20 bg-white/12 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/18 disabled:cursor-not-allowed disabled:opacity-60"
+              onClick={handleSavePreviewImage}
+              disabled={isSavingImage}
+            >
+              {isSavingImage ? "저장 중..." : "이미지로 저장"}
+            </button>
+          </div>
+
+          <div
+            ref={previewRef}
+            className="block w-full rounded-[22px] border border-white/25 bg-[#abc1d1] px-2.5 pb-2.5 pt-2 text-left text-slate-900 shadow-[0_20px_60px_rgba(0,0,0,0.35)] sm:rounded-[26px] sm:px-4 sm:pb-4 sm:pt-3"
+          >
           <div className="overflow-hidden rounded-[18px] bg-[#b9cfdd] sm:rounded-[22px]">
             <div className="border-b border-black/5 bg-[#a7bece] px-4 pb-2.5 pt-0.5 sm:px-5 sm:pb-3 sm:pt-1">
               <div className="flex items-start justify-between">
@@ -466,6 +512,7 @@ export function JujeobMachine() {
               </div>
             </div>
           </div>
+        </div>
         </div>
 
         <p className="mt-3 px-3 text-sm text-white/76">말풍선을 누르면 해당 문장만 복사돼요.</p>
