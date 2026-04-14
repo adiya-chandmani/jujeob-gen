@@ -14,8 +14,6 @@ const MAC_WINDOW_CONTROLS = [
   { id: "minimize", color: "bg-[#febc2e]" },
   { id: "maximize", color: "bg-[#28c840]" },
 ] as const;
-const KAKAO_ROOM_NAME = "주접연구회";
-const KAKAO_ROOM_MEMBER_COUNT = 12;
 
 const BACKGROUND_NAMES = ["민주", "민지", "해린", "서연", "지민", "준혁", "유진", "하린"];
 const ROTATIONS = [-3, 2, -2, 4, -4, 3, -1, 1];
@@ -231,12 +229,15 @@ function MenuIcon() {
   );
 }
 
-function PersonIcon() {
+function KakaoProfileAvatar() {
   return (
-    <svg viewBox="0 0 24 24" className="h-[13px] w-[13px]" fill="currentColor" aria-hidden="true">
-      <circle cx="12" cy="8" r="3.2" />
-      <path d="M6.8 18.4C7.4 15.9 9.3 14.5 12 14.5C14.7 14.5 16.6 15.9 17.2 18.4H6.8Z" />
-    </svg>
+    <div
+      aria-hidden="true"
+      className="relative h-11 w-11 shrink-0 overflow-hidden rounded-full bg-[linear-gradient(180deg,#fff3a1_0%,#ffd340_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.5),0_3px_8px_rgba(0,0,0,0.08)]"
+    >
+      <span className="absolute left-1/2 top-[9px] h-3.5 w-3.5 -translate-x-1/2 rounded-full bg-[#6b4b00]/80" />
+      <span className="absolute bottom-[7px] left-1/2 h-5 w-7 -translate-x-1/2 rounded-t-[999px] bg-[#6b4b00]/80" />
+    </div>
   );
 }
 
@@ -277,7 +278,7 @@ function BackgroundWall() {
 }
 
 export function JujeobMachine() {
-  const [name, setName] = useState("");
+  const [name, setName] = useState(DEFAULT_NAME);
   const [selectedItem, setSelectedItem] = useState<JujeobChatItem>(jujeobChatDB[0]);
   const [seenIds, setSeenIds] = useState<string[]>([jujeobChatDB[0].id]);
   const [error, setError] = useState("");
@@ -381,9 +382,9 @@ export function JujeobMachine() {
           {error ? <p className="text-sm text-rose-300">{error}</p> : null}
         </form>
 
-        <div className="mt-6 block w-full max-w-[720px] rounded-[22px] border border-white/25 bg-[#abc1d1] px-3 py-3 text-left text-slate-900 shadow-[0_20px_60px_rgba(0,0,0,0.35)] sm:mt-8 sm:rounded-[26px] sm:px-5 sm:py-5">
+        <div className="mt-6 block w-full max-w-[720px] rounded-[22px] border border-white/25 bg-[#abc1d1] px-2.5 pb-2.5 pt-2 text-left text-slate-900 shadow-[0_20px_60px_rgba(0,0,0,0.35)] sm:mt-8 sm:rounded-[26px] sm:px-4 sm:pb-4 sm:pt-3">
           <div className="overflow-hidden rounded-[18px] bg-[#b9cfdd] sm:rounded-[22px]">
-            <div className="border-b border-black/5 bg-[#a7bece] px-4 pb-3 pt-1.5 sm:px-5 sm:pt-2">
+            <div className="border-b border-black/5 bg-[#a7bece] px-4 pb-2.5 pt-0.5 sm:px-5 sm:pb-3 sm:pt-1">
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-2">
                   {MAC_WINDOW_CONTROLS.map((control) => (
@@ -401,22 +402,14 @@ export function JujeobMachine() {
                 </div>
               </div>
 
-              <div className="mt-2.5 flex items-center justify-between gap-3">
+              <div className="mt-1.5 flex items-center justify-between gap-3">
                 <div className="flex min-w-0 items-center gap-3">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px] bg-[radial-gradient(circle_at_30%_30%,#fff6aa_0%,#ffd54d_58%,#ecb800_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.45),0_3px_8px_rgba(0,0,0,0.08)]">
-                    <span className="text-[11px] font-black tracking-[-0.04em] text-[#6e4f00]">
-                      JJ
-                    </span>
-                  </div>
+                  <KakaoProfileAvatar />
 
                   <div className="min-w-0">
                     <p className="truncate text-[15px] font-semibold tracking-[-0.02em] text-slate-800">
-                      {KAKAO_ROOM_NAME}
+                      {effectiveName}
                     </p>
-                    <div className="mt-0.5 flex items-center gap-1 text-[12px] font-medium text-slate-600">
-                      <PersonIcon />
-                      <span>{KAKAO_ROOM_MEMBER_COUNT}</span>
-                    </div>
                   </div>
                 </div>
 
