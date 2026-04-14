@@ -418,104 +418,103 @@ export function JujeobMachine() {
         </form>
 
         <div className="mt-6 flex w-full max-w-[720px] flex-col gap-3 sm:mt-8">
-          <div className="flex justify-end">
-            <button
-              type="button"
-              className="rounded-full border border-white/20 bg-white/12 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/18 disabled:cursor-not-allowed disabled:opacity-60"
-              onClick={handleSavePreviewImage}
-              disabled={isSavingImage}
-            >
-              {isSavingImage ? "저장 중..." : "이미지로 저장"}
-            </button>
-          </div>
-
           <div
             ref={previewRef}
             className="block w-full rounded-[22px] border border-white/25 bg-[#abc1d1] px-2.5 pb-2.5 pt-2 text-left text-slate-900 shadow-[0_20px_60px_rgba(0,0,0,0.35)] sm:rounded-[26px] sm:px-4 sm:pb-4 sm:pt-3"
           >
-          <div className="overflow-hidden rounded-[18px] bg-[#b9cfdd] sm:rounded-[22px]">
-            <div className="border-b border-black/5 bg-[#a7bece] px-4 pb-2.5 pt-0.5 sm:px-5 sm:pb-3 sm:pt-1">
-              <div className="flex items-start justify-between">
-                <div className="flex items-center gap-2">
-                  {MAC_WINDOW_CONTROLS.map((control) => (
-                    <span
-                      key={control.id}
-                      aria-hidden="true"
-                      className={`h-3 w-3 rounded-full border border-black/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] ${control.color}`}
-                    />
-                  ))}
-                </div>
+            <div className="overflow-hidden rounded-[18px] bg-[#b9cfdd] sm:rounded-[22px]">
+              <div className="border-b border-black/5 bg-[#a7bece] px-4 pb-2.5 pt-0.5 sm:px-5 sm:pb-3 sm:pt-1">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center gap-2">
+                    {MAC_WINDOW_CONTROLS.map((control) => (
+                      <span
+                        key={control.id}
+                        aria-hidden="true"
+                        className={`h-3 w-3 rounded-full border border-black/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] ${control.color}`}
+                      />
+                    ))}
+                  </div>
 
-                <div className="flex items-center gap-1.5 pt-0.5" aria-hidden="true">
-                  <span className="h-1.5 w-10 rounded-full bg-black/8" />
-                  <span className="h-3 w-3 rounded-full border border-white/60 bg-white/45" />
-                </div>
-              </div>
-
-              <div className="mt-1.5 flex items-center justify-between gap-3">
-                <div className="flex min-w-0 items-center gap-3">
-                  <KakaoProfileAvatar />
-
-                  <div className="min-w-0">
-                    <p className="truncate text-[15px] font-semibold tracking-[-0.02em] text-slate-800">
-                      {effectiveName}
-                    </p>
+                  <div className="flex items-center gap-1.5 pt-0.5" aria-hidden="true">
+                    <span className="h-1.5 w-10 rounded-full bg-black/8" />
+                    <span className="h-3 w-3 rounded-full border border-white/60 bg-white/45" />
                   </div>
                 </div>
 
-                <div className="flex shrink-0 items-center gap-0.5 text-slate-800 sm:gap-1">
-                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-full">
-                    <SearchIcon />
-                  </span>
-                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-full">
-                    <PhoneIcon />
-                  </span>
-                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-full">
-                    <VideoIcon />
-                  </span>
-                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-full">
-                    <MenuIcon />
-                  </span>
+                <div className="mt-1.5 flex items-center justify-between gap-3">
+                  <div className="flex min-w-0 items-center gap-3">
+                    <KakaoProfileAvatar />
+
+                    <div className="min-w-0">
+                      <p className="truncate text-[15px] font-semibold tracking-[-0.02em] text-slate-800">
+                        {effectiveName}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex shrink-0 items-center gap-0.5 text-slate-800 sm:gap-1">
+                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-full">
+                      <SearchIcon />
+                    </span>
+                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-full">
+                      <PhoneIcon />
+                    </span>
+                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-full">
+                      <VideoIcon />
+                    </span>
+                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-full">
+                      <MenuIcon />
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="space-y-2.5 bg-[#b9cfdd] px-3 py-3 sm:space-y-3 sm:px-5 sm:py-4">
-              <div className="flex justify-end">
-                <button
-                  type="button"
-                  className="max-w-[88%] rounded-[16px] rounded-br-md bg-[#ffe45c] px-3.5 py-2.5 text-left text-sm leading-6 text-slate-900 shadow-sm transition hover:brightness-[0.98] sm:max-w-[84%] sm:rounded-[18px] sm:px-4 sm:py-3 sm:text-[15px] sm:leading-7"
-                  onClick={() => handleCopyBubble(chat.renderedOpener)}
-                >
-                  {chat.renderedOpener}
-                </button>
-              </div>
+              <div className="space-y-2.5 bg-[#b9cfdd] px-3 py-3 sm:space-y-3 sm:px-5 sm:py-4">
+                <div className="flex justify-end">
+                  <button
+                    type="button"
+                    className="max-w-[88%] rounded-[16px] rounded-br-md bg-[#ffe45c] px-3.5 py-2.5 text-left text-sm leading-6 text-slate-900 shadow-sm transition hover:brightness-[0.98] sm:max-w-[84%] sm:rounded-[18px] sm:px-4 sm:py-3 sm:text-[15px] sm:leading-7"
+                    onClick={() => handleCopyBubble(chat.renderedOpener)}
+                  >
+                    {chat.renderedOpener}
+                  </button>
+                </div>
 
-              <div className="flex justify-start">
-                <button
-                  type="button"
-                  className="max-w-[82%] rounded-[16px] rounded-bl-md bg-white px-3.5 py-2.5 text-left text-sm leading-6 text-slate-900 shadow-sm transition hover:bg-slate-50 sm:max-w-[78%] sm:rounded-[18px] sm:px-4 sm:py-3 sm:text-[15px] sm:leading-7"
-                  onClick={() => handleCopyBubble(chat.renderedReply)}
-                >
-                  {chat.renderedReply}
-                </button>
-              </div>
+                <div className="flex justify-start">
+                  <button
+                    type="button"
+                    className="max-w-[82%] rounded-[16px] rounded-bl-md bg-white px-3.5 py-2.5 text-left text-sm leading-6 text-slate-900 shadow-sm transition hover:bg-slate-50 sm:max-w-[78%] sm:rounded-[18px] sm:px-4 sm:py-3 sm:text-[15px] sm:leading-7"
+                    onClick={() => handleCopyBubble(chat.renderedReply)}
+                  >
+                    {chat.renderedReply}
+                  </button>
+                </div>
 
-              <div className="flex justify-end">
-                <button
-                  type="button"
-                  className="max-w-[88%] rounded-[16px] rounded-br-md bg-[#ffe45c] px-3.5 py-2.5 text-left text-sm font-semibold leading-6 text-slate-900 shadow-sm transition hover:brightness-[0.98] sm:max-w-[84%] sm:rounded-[18px] sm:px-4 sm:py-3 sm:text-[15px] sm:leading-7"
-                  onClick={() => handleCopyBubble(chat.renderedPunchline)}
-                >
-                  {chat.renderedPunchline}
-                </button>
+                <div className="flex justify-end">
+                  <button
+                    type="button"
+                    className="max-w-[88%] rounded-[16px] rounded-br-md bg-[#ffe45c] px-3.5 py-2.5 text-left text-sm font-semibold leading-6 text-slate-900 shadow-sm transition hover:brightness-[0.98] sm:max-w-[84%] sm:rounded-[18px] sm:px-4 sm:py-3 sm:text-[15px] sm:leading-7"
+                    onClick={() => handleCopyBubble(chat.renderedPunchline)}
+                  >
+                    {chat.renderedPunchline}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        </div>
 
-        <p className="mt-3 px-3 text-sm text-white/76">말풍선을 누르면 해당 문장만 복사돼요.</p>
+        <div className="mt-3 flex items-center justify-center gap-2 px-3 text-sm text-white/76">
+          <p>말풍선을 누르면 해당 문장만 복사돼요.</p>
+          <button
+            type="button"
+            className="text-xs font-semibold text-white/62 underline-offset-2 transition hover:text-white/86 hover:underline disabled:cursor-not-allowed disabled:no-underline disabled:opacity-55"
+            onClick={handleSavePreviewImage}
+            disabled={isSavingImage}
+          >
+            {isSavingImage ? "저장 중..." : "이미지로 저장"}
+          </button>
+        </div>
 
         <p className="mt-4 px-4 text-xs leading-6 text-white/58 sm:text-sm">
           예쁜 보고 뽑으시다가 우리집 왼쪽 뺨 뚫지 마세요..
