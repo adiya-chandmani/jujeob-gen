@@ -14,6 +14,8 @@ const MAC_WINDOW_CONTROLS = [
   { id: "minimize", color: "bg-[#febc2e]" },
   { id: "maximize", color: "bg-[#28c840]" },
 ] as const;
+const KAKAO_ROOM_NAME = "주접연구회";
+const KAKAO_ROOM_MEMBER_COUNT = 12;
 
 const BACKGROUND_NAMES = ["민주", "민지", "해린", "서연", "지민", "준혁", "유진", "하린"];
 const ROTATIONS = [-3, 2, -2, 4, -4, 3, -1, 1];
@@ -188,6 +190,56 @@ function CollageTile({
   );
 }
 
+function SearchIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" aria-hidden="true">
+      <circle cx="11" cy="11" r="5.5" stroke="currentColor" strokeWidth="2" />
+      <path d="M15.5 15.5L20 20" stroke="currentColor" strokeLinecap="round" strokeWidth="2" />
+    </svg>
+  );
+}
+
+function PhoneIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" aria-hidden="true">
+      <path
+        d="M6.7 4.8C7.1 4.3 7.8 4.1 8.4 4.4L10.6 5.5C11.2 5.8 11.5 6.5 11.3 7.1L10.7 9.4C10.6 9.8 10.7 10.2 11 10.5L13.5 13C13.8 13.3 14.2 13.4 14.6 13.3L16.9 12.7C17.5 12.5 18.2 12.8 18.5 13.4L19.6 15.6C19.9 16.2 19.7 16.9 19.2 17.3L17.9 18.4C17.1 19.1 16 19.4 15 19.1C12.3 18.3 9.8 16.8 7.8 14.8C5.8 12.8 4.3 10.3 3.5 7.6C3.2 6.6 3.5 5.5 4.2 4.7L6.7 4.8Z"
+        stroke="currentColor"
+        strokeLinejoin="round"
+        strokeWidth="1.8"
+      />
+    </svg>
+  );
+}
+
+function VideoIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" aria-hidden="true">
+      <rect x="3.5" y="6.5" width="11" height="11" rx="2.5" stroke="currentColor" strokeWidth="2" />
+      <path d="M14.5 10L19.5 7.5V16.5L14.5 14V10Z" fill="currentColor" />
+    </svg>
+  );
+}
+
+function MenuIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" aria-hidden="true">
+      <path d="M5 7H19" stroke="currentColor" strokeLinecap="round" strokeWidth="2" />
+      <path d="M5 12H19" stroke="currentColor" strokeLinecap="round" strokeWidth="2" />
+      <path d="M5 17H19" stroke="currentColor" strokeLinecap="round" strokeWidth="2" />
+    </svg>
+  );
+}
+
+function PersonIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-[13px] w-[13px]" fill="currentColor" aria-hidden="true">
+      <circle cx="12" cy="8" r="3.2" />
+      <path d="M6.8 18.4C7.4 15.9 9.3 14.5 12 14.5C14.7 14.5 16.6 15.9 17.2 18.4H6.8Z" />
+    </svg>
+  );
+}
+
 function BackgroundWall() {
   const desktopCollageItems = buildCollageItems(collageLayouts, collageSourceOrder, collageOffsets);
   const mobileCollageItems = buildCollageItems(
@@ -331,15 +383,57 @@ export function JujeobMachine() {
 
         <div className="mt-6 block w-full max-w-[720px] rounded-[22px] border border-white/25 bg-[#abc1d1] px-3 py-3 text-left text-slate-900 shadow-[0_20px_60px_rgba(0,0,0,0.35)] sm:mt-8 sm:rounded-[26px] sm:px-5 sm:py-5">
           <div className="overflow-hidden rounded-[18px] bg-[#b9cfdd] sm:rounded-[22px]">
-            <div className="border-b border-black/5 bg-[#a7bece] px-4 pb-3.5 pt-2.5 sm:px-5">
-              <div className="flex items-center gap-2">
-                {MAC_WINDOW_CONTROLS.map((control) => (
-                  <span
-                    key={control.id}
-                    aria-hidden="true"
-                    className={`h-3 w-3 rounded-full border border-black/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] ${control.color}`}
-                  />
-                ))}
+            <div className="border-b border-black/5 bg-[#a7bece] px-4 pb-3 pt-1.5 sm:px-5 sm:pt-2">
+              <div className="flex items-start justify-between">
+                <div className="flex items-center gap-2">
+                  {MAC_WINDOW_CONTROLS.map((control) => (
+                    <span
+                      key={control.id}
+                      aria-hidden="true"
+                      className={`h-3 w-3 rounded-full border border-black/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] ${control.color}`}
+                    />
+                  ))}
+                </div>
+
+                <div className="flex items-center gap-1.5 pt-0.5" aria-hidden="true">
+                  <span className="h-1.5 w-10 rounded-full bg-black/8" />
+                  <span className="h-3 w-3 rounded-full border border-white/60 bg-white/45" />
+                </div>
+              </div>
+
+              <div className="mt-2.5 flex items-center justify-between gap-3">
+                <div className="flex min-w-0 items-center gap-3">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px] bg-[radial-gradient(circle_at_30%_30%,#fff6aa_0%,#ffd54d_58%,#ecb800_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.45),0_3px_8px_rgba(0,0,0,0.08)]">
+                    <span className="text-[11px] font-black tracking-[-0.04em] text-[#6e4f00]">
+                      JJ
+                    </span>
+                  </div>
+
+                  <div className="min-w-0">
+                    <p className="truncate text-[15px] font-semibold tracking-[-0.02em] text-slate-800">
+                      {KAKAO_ROOM_NAME}
+                    </p>
+                    <div className="mt-0.5 flex items-center gap-1 text-[12px] font-medium text-slate-600">
+                      <PersonIcon />
+                      <span>{KAKAO_ROOM_MEMBER_COUNT}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex shrink-0 items-center gap-0.5 text-slate-800 sm:gap-1">
+                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-full">
+                    <SearchIcon />
+                  </span>
+                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-full">
+                    <PhoneIcon />
+                  </span>
+                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-full">
+                    <VideoIcon />
+                  </span>
+                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-full">
+                    <MenuIcon />
+                  </span>
+                </div>
               </div>
             </div>
 
