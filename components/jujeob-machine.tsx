@@ -517,7 +517,7 @@ export function JujeobMachine() {
         </div>
 
         <p className="mt-4 px-4 text-xs leading-6 text-white/58 sm:text-sm">
-          예쁜 보고 뽑으시다가 우리집 왼쪽 뺨 뚫지 마세요..
+          주접 하나 뽑고 2세 이름까지 생각하지 마세요..
         </p>
       </div>
 
