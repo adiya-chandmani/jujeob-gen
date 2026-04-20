@@ -399,7 +399,7 @@ export function JujeobMachine() {
               value={name}
               maxLength={10}
               placeholder="이름/별명"
-              className="h-11 w-full flex-1 rounded-md border border-white/30 bg-white/94 px-4 text-sm text-slate-900 outline-none transition focus:border-white"
+              className="h-12 w-full flex-1 rounded-md border border-white/30 bg-white/94 px-4 text-base text-slate-900 outline-none transition focus:border-white sm:h-11 sm:text-sm"
               onChange={(event) => {
                 setName(event.target.value);
                 if (error) {
@@ -409,7 +409,7 @@ export function JujeobMachine() {
             />
             <button
               type="submit"
-              className="h-11 w-full rounded-md border border-white/35 bg-white px-4 text-sm font-semibold text-slate-900 transition hover:bg-white/92 sm:w-auto"
+              className="h-12 w-full rounded-md border border-white/35 bg-white px-4 text-sm font-semibold text-slate-900 transition hover:bg-white/92 sm:h-11 sm:w-auto"
             >
               주접 뽑기
             </button>
