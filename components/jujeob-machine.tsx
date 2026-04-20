@@ -384,22 +384,22 @@ export function JujeobMachine() {
         </p>
 
         <form
-          className="mt-7 flex w-full max-w-md flex-col items-center gap-3 sm:mt-10"
+          className="mt-7 flex w-full max-w-[420px] flex-col items-center gap-3 sm:mt-10"
           onSubmit={(event) => {
             event.preventDefault();
             generateJujeob();
           }}
         >
-          <label htmlFor="name" className="text-sm font-medium text-white/82">
+          <label htmlFor="name" className="text-sm font-medium tracking-[-0.02em] text-white/82">
             이름이 뭐야..
           </label>
-          <div className="flex w-full flex-col items-stretch gap-2 sm:flex-row sm:items-center">
+          <div className="flex w-full flex-col gap-2 rounded-[24px] border border-white/14 bg-white/10 p-2 shadow-[0_16px_40px_rgba(0,0,0,0.28)] backdrop-blur-xl sm:flex-row sm:items-center sm:gap-2.5">
             <input
               id="name"
               value={name}
               maxLength={10}
               placeholder="이름/별명"
-              className="h-11 w-full flex-1 rounded-md border border-white/30 bg-white/94 px-4 text-sm text-slate-900 outline-none transition focus:border-white"
+              className="h-12 w-full min-w-0 flex-1 appearance-none rounded-[18px] border border-white/20 bg-white px-4 text-base font-medium text-slate-900 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)] outline-none transition placeholder:text-slate-400 focus:border-[#ffe07a] focus:ring-4 focus:ring-[#ffe07a]/20 sm:h-11 sm:text-[15px]"
               onChange={(event) => {
                 setName(event.target.value);
                 if (error) {
@@ -409,12 +409,12 @@ export function JujeobMachine() {
             />
             <button
               type="submit"
-              className="h-11 w-full rounded-md border border-white/35 bg-white px-4 text-sm font-semibold text-slate-900 transition hover:bg-white/92 sm:w-auto"
+              className="h-12 w-full shrink-0 rounded-[18px] border border-[#f7d86a]/70 bg-[#ffe07a] px-5 text-[15px] font-semibold tracking-[-0.02em] text-slate-900 shadow-[0_12px_26px_rgba(255,224,122,0.28)] transition hover:bg-[#ffe79a] active:translate-y-px sm:h-11 sm:w-auto"
             >
               주접 뽑기
             </button>
           </div>
-          {error ? <p className="text-sm text-rose-300">{error}</p> : null}
+          {error ? <p className="text-sm text-rose-300 sm:self-start">{error}</p> : null}
         </form>
 
         <div className="mt-6 flex w-full max-w-[720px] flex-col gap-3 sm:mt-8">
