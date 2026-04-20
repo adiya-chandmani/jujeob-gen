@@ -10,8 +10,6 @@ import { normalizeName, renderChatItem, validateName } from "@/lib/jujeob-engine
 import type { JujeobChatItem } from "@/lib/types";
 
 const DEFAULT_NAME = "민지";
-const FAVORITES_STORAGE_KEY = "jujeob-machine:favorites";
-const MAX_FAVORITES = 12;
 const MAC_WINDOW_CONTROLS = [
   { id: "close", color: "bg-[#ff5f57]" },
   { id: "minimize", color: "bg-[#febc2e]" },
@@ -29,38 +27,6 @@ const backgroundPosts = jujeobItems.slice(0, 20).map((item, index) => ({
   comments: 2 + (index % 9),
   rotation: ROTATIONS[index % ROTATIONS.length],
 }));
-
-type FavoriteChat = {
-  id: string;
-  itemId: string;
-  name: string;
-  opener: string;
-  reply: string;
-  punchline: string;
-  savedAt: number;
-};
-
-function createFavoriteId(itemId: string, name: string) {
-  return `${itemId}:${name}`;
-}
-
-function isFavoriteChat(value: unknown): value is FavoriteChat {
-  if (!value || typeof value !== "object") {
-    return false;
-  }
-
-  const candidate = value as Record<string, unknown>;
-
-  return (
-    typeof candidate.id === "string" &&
-    typeof candidate.itemId === "string" &&
-    typeof candidate.name === "string" &&
-    typeof candidate.opener === "string" &&
-    typeof candidate.reply === "string" &&
-    typeof candidate.punchline === "string" &&
-    typeof candidate.savedAt === "number"
-  );
-}
 
 async function copyText(text: string) {
   try {
@@ -320,24 +286,17 @@ export function JujeobMachine() {
   const [name, setName] = useState("");
   const [selectedItem, setSelectedItem] = useState<JujeobChatItem>(jujeobChatDB[0]);
   const [seenIds, setSeenIds] = useState<string[]>([jujeobChatDB[0].id]);
-  const [favorites, setFavorites] = useState<FavoriteChat[]>([]);
   const [error, setError] = useState("");
   const [isSavingImage, setIsSavingImage] = useState(false);
   const [toast, setToast] = useState("");
-  const [hasLoadedFavorites, setHasLoadedFavorites] = useState(false);
-  const [hasHydratedFromUrl, setHasHydratedFromUrl] = useState(false);
 
   const previewRef = useRef<HTMLDivElement | null>(null);
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const normalizedName = normalizeName(name);
-  const effectiveName = normalizedName || DEFAULT_NAME;
+  const effectiveName = normalizeName(name) || DEFAULT_NAME;
   const chat = renderChatItem(selectedItem, effectiveName);
   const resultText = [chat.renderedOpener, chat.renderedReply, chat.renderedPunchline].join("\n");
   const subtitleText = `나 몰랐는데 ${effectiveName} 좋아하네..`;
-  const currentFavoriteId = createFavoriteId(selectedItem.id, effectiveName);
-  const isCurrentFavorite = favorites.some((favorite) => favorite.id === currentFavoriteId);
-  const isShareSupported = typeof navigator !== "undefined" && typeof navigator.share === "function";
 
   useEffect(() => {
     return () => {
@@ -346,91 +305,6 @@ export function JujeobMachine() {
       }
     };
   }, []);
-
-  useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
-
-    try {
-      const rawFavorites = window.localStorage.getItem(FAVORITES_STORAGE_KEY);
-
-      if (rawFavorites) {
-        const parsedFavorites = JSON.parse(rawFavorites);
-
-        if (Array.isArray(parsedFavorites)) {
-          setFavorites(parsedFavorites.filter(isFavoriteChat).slice(0, MAX_FAVORITES));
-        }
-      }
-    } catch {
-      window.localStorage.removeItem(FAVORITES_STORAGE_KEY);
-    } finally {
-      setHasLoadedFavorites(true);
-    }
-
-    const currentUrl = new URL(window.location.href);
-    const sharedName = normalizeName(currentUrl.searchParams.get("name") ?? "");
-    const sharedItemId = currentUrl.searchParams.get("chat");
-
-    if (sharedName && !validateName(sharedName)) {
-      setName(sharedName);
-    }
-
-    if (sharedItemId) {
-      const sharedItem = jujeobChatDB.find((item) => item.id === sharedItemId);
-
-      if (sharedItem) {
-        setSelectedItem(sharedItem);
-        setSeenIds([sharedItem.id]);
-      }
-    }
-
-    setHasHydratedFromUrl(true);
-  }, []);
-
-  useEffect(() => {
-    if (!hasLoadedFavorites || typeof window === "undefined") {
-      return;
-    }
-
-    window.localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(favorites));
-  }, [favorites, hasLoadedFavorites]);
-
-  useEffect(() => {
-    if (!hasHydratedFromUrl || typeof window === "undefined") {
-      return;
-    }
-
-    const currentUrl = new URL(window.location.href);
-    const nextUrl = new URL(window.location.href);
-    const hasCustomState = Boolean(normalizedName) || selectedItem.id !== jujeobChatDB[0].id;
-
-    if (!hasCustomState) {
-      const clearedUrl = `${nextUrl.pathname}${nextUrl.hash}`;
-      const currentPath = `${currentUrl.pathname}${currentUrl.search}${currentUrl.hash}`;
-
-      if (currentPath !== clearedUrl) {
-        window.history.replaceState(null, "", clearedUrl);
-      }
-
-      return;
-    }
-
-    if (normalizedName) {
-      nextUrl.searchParams.set("name", normalizedName);
-    } else {
-      nextUrl.searchParams.delete("name");
-    }
-
-    nextUrl.searchParams.set("chat", selectedItem.id);
-
-    const nextPath = `${nextUrl.pathname}?${nextUrl.searchParams.toString()}${nextUrl.hash}`;
-    const currentPath = `${currentUrl.pathname}${currentUrl.search}${currentUrl.hash}`;
-
-    if (currentPath !== nextPath) {
-      window.history.replaceState(null, "", nextPath);
-    }
-  }, [hasHydratedFromUrl, normalizedName, selectedItem.id]);
 
   function showToast(message: string) {
     setToast(message);
@@ -467,109 +341,6 @@ export function JujeobMachine() {
   async function handleCopyBubble(text: string) {
     const copied = await copyText(text);
     showToast(copied ? "복사됨" : "복사 실패");
-  }
-
-  async function handleCopyConversation() {
-    const copied = await copyText(resultText);
-    showToast(copied ? "대화 전체 복사됨" : "복사 실패");
-  }
-
-  function handleToggleFavorite() {
-    if (isCurrentFavorite) {
-      setFavorites((current) => current.filter((favorite) => favorite.id !== currentFavoriteId));
-      showToast("즐겨찾기 해제됨");
-      return;
-    }
-
-    const nextFavorite: FavoriteChat = {
-      id: currentFavoriteId,
-      itemId: selectedItem.id,
-      name: effectiveName,
-      opener: chat.renderedOpener,
-      reply: chat.renderedReply,
-      punchline: chat.renderedPunchline,
-      savedAt: Date.now(),
-    };
-
-    setFavorites((current) => [nextFavorite, ...current.filter((favorite) => favorite.id !== nextFavorite.id)].slice(0, MAX_FAVORITES));
-    showToast("즐겨찾기에 저장됨");
-  }
-
-  function getShareUrl() {
-    if (typeof window === "undefined") {
-      return "";
-    }
-
-    const shareUrl = new URL(window.location.href);
-
-    if (normalizedName) {
-      shareUrl.searchParams.set("name", normalizedName);
-    } else {
-      shareUrl.searchParams.delete("name");
-    }
-
-    shareUrl.searchParams.set("chat", selectedItem.id);
-
-    return shareUrl.toString();
-  }
-
-  async function handleCopyShareLink() {
-    const copied = await copyText(getShareUrl());
-    showToast(copied ? "링크 복사됨" : "복사 실패");
-  }
-
-  async function handleShare() {
-    const shareUrl = getShareUrl();
-
-    if (!shareUrl) {
-      showToast("공유 링크 생성 실패");
-      return;
-    }
-
-    if (!isShareSupported) {
-      await handleCopyShareLink();
-      return;
-    }
-
-    try {
-      await navigator.share({
-        title: "주접자판기",
-        text: resultText,
-        url: shareUrl,
-      });
-    } catch (error) {
-      if (error instanceof DOMException && error.name === "AbortError") {
-        return;
-      }
-
-      const copied = await copyText(shareUrl);
-      showToast(copied ? "링크 복사됨" : "공유 실패");
-    }
-  }
-
-  function handleLoadFavorite(favorite: FavoriteChat) {
-    const favoriteItem = jujeobChatDB.find((item) => item.id === favorite.itemId);
-
-    if (!favoriteItem) {
-      showToast("원본 멘트를 찾을 수 없어.");
-      return;
-    }
-
-    setName(favorite.name);
-    setSelectedItem(favoriteItem);
-    setSeenIds((current) => [...new Set([favoriteItem.id, ...current])]);
-    setError("");
-    showToast("즐겨찾기 불러옴");
-  }
-
-  async function handleCopyFavorite(favorite: FavoriteChat) {
-    const copied = await copyText([favorite.opener, favorite.reply, favorite.punchline].join("\n"));
-    showToast(copied ? "즐겨찾기 복사됨" : "복사 실패");
-  }
-
-  function handleRemoveFavorite(favoriteId: string) {
-    setFavorites((current) => current.filter((favorite) => favorite.id !== favoriteId));
-    showToast("즐겨찾기 삭제됨");
   }
 
   async function handleSavePreviewImage() {
@@ -733,120 +504,17 @@ export function JujeobMachine() {
           </div>
         </div>
 
-        <div className="mt-3 flex w-full max-w-[720px] flex-col items-center gap-3 px-1">
-          <p className="px-3 text-center text-sm text-white/76">
-            말풍선을 누르면 해당 문장만 복사돼요.
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-2">
-            <button
-              type="button"
-              className="rounded-full border border-white/20 bg-white/10 px-3.5 py-2 text-sm font-semibold text-white/88 transition hover:bg-white/15"
-              onClick={handleCopyConversation}
-            >
-              대화 전체 복사
-            </button>
-            <button
-              type="button"
-              className="rounded-full border border-white/20 bg-white/10 px-3.5 py-2 text-sm font-semibold text-white/88 transition hover:bg-white/15"
-              onClick={handleToggleFavorite}
-            >
-              {isCurrentFavorite ? "즐겨찾기 해제" : "즐겨찾기"}
-            </button>
-            <button
-              type="button"
-              className="rounded-full border border-white/20 bg-white/10 px-3.5 py-2 text-sm font-semibold text-white/88 transition hover:bg-white/15"
-              onClick={handleCopyShareLink}
-            >
-              링크 복사
-            </button>
-            {isShareSupported ? (
-              <button
-                type="button"
-                className="rounded-full border border-white/20 bg-white/10 px-3.5 py-2 text-sm font-semibold text-white/88 transition hover:bg-white/15"
-                onClick={handleShare}
-              >
-                공유하기
-              </button>
-            ) : null}
-            <button
-              type="button"
-              className="rounded-full border border-white/20 bg-white/10 px-3.5 py-2 text-sm font-semibold text-white/88 transition hover:bg-white/15 disabled:cursor-not-allowed disabled:opacity-55"
-              onClick={handleSavePreviewImage}
-              disabled={isSavingImage}
-            >
-              {isSavingImage ? "저장 중..." : "이미지로 저장"}
-            </button>
-          </div>
+        <div className="mt-3 flex items-center justify-center gap-2 px-3 text-sm text-white/76">
+          <p>말풍선을 누르면 해당 문장만 복사돼요.</p>
+          <button
+            type="button"
+            className="text-xs font-semibold text-white/62 underline-offset-2 transition hover:text-white/86 hover:underline disabled:cursor-not-allowed disabled:no-underline disabled:opacity-55"
+            onClick={handleSavePreviewImage}
+            disabled={isSavingImage}
+          >
+            {isSavingImage ? "저장 중..." : "이미지로 저장"}
+          </button>
         </div>
-
-        {favorites.length > 0 ? (
-          <section className="mt-4 w-full max-w-[720px] rounded-[24px] border border-white/15 bg-black/20 p-4 text-left backdrop-blur-md sm:p-5">
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <h2 className="text-base font-semibold tracking-[-0.02em] text-white sm:text-lg">
-                  즐겨찾기
-                </h2>
-                <p className="mt-1 text-xs text-white/58 sm:text-sm">
-                  저장한 주접 멘트를 다시 불러오거나 바로 복사할 수 있어요.
-                </p>
-              </div>
-              <span className="rounded-full border border-white/15 bg-white/8 px-2.5 py-1 text-xs font-semibold text-white/72">
-                {favorites.length}개
-              </span>
-            </div>
-
-            <div className="mt-4 grid gap-3">
-              {favorites.map((favorite) => (
-                <article
-                  key={favorite.id}
-                  className="rounded-[20px] border border-white/12 bg-white/8 p-4 shadow-[0_10px_30px_rgba(0,0,0,0.12)]"
-                >
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-semibold text-white sm:text-[15px]">
-                        {favorite.name}
-                      </p>
-                      <p className="mt-1 text-xs text-white/50">
-                        {new Date(favorite.savedAt).toLocaleString("ko-KR")}
-                      </p>
-                    </div>
-                    <span className="rounded-full border border-white/12 bg-black/15 px-2 py-1 text-[11px] font-semibold text-white/70">
-                      {favorite.itemId}
-                    </span>
-                  </div>
-
-                  <p className="mt-3 line-clamp-5 whitespace-pre-line break-keep text-sm leading-6 text-white/82">
-                    {[favorite.opener, favorite.reply, favorite.punchline].join("\n")}
-                  </p>
-
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    <button
-                      type="button"
-                      className="rounded-full border border-white/18 bg-white/10 px-3 py-1.5 text-xs font-semibold text-white/84 transition hover:bg-white/15"
-                      onClick={() => handleLoadFavorite(favorite)}
-                    >
-                      다시 보기
-                    </button>
-                    <button
-                      type="button"
-                      className="rounded-full border border-white/18 bg-white/10 px-3 py-1.5 text-xs font-semibold text-white/84 transition hover:bg-white/15"
-                      onClick={() => handleCopyFavorite(favorite)}
-                    >
-                      복사
-                    </button>
-                    <button
-                      type="button"
-                      className="rounded-full border border-white/18 bg-white/10 px-3 py-1.5 text-xs font-semibold text-white/84 transition hover:bg-white/15"
-                      onClick={() => handleRemoveFavorite(favorite.id)}
-                    >
-                      삭제
-                    </button>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </section>
-        ) : null}
 
         <p className="mt-4 px-4 text-xs leading-6 text-white/58 sm:text-sm">
           예쁜 보고 뽑으시다가 우리집 왼쪽 뺨 뚫지 마세요..
